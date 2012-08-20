@@ -7,6 +7,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpecificTools extends JavaPlugin implements Listener{
@@ -38,8 +39,8 @@ public class SpecificTools extends JavaPlugin implements Listener{
 	public void onBlockBreak(BlockBreakEvent event){
 		Set<Material> tools = replacements.getToolsByBlock(event.getBlock().getType());
 		if(!event.getPlayer().hasPermission("SpecificTools.default") && tools != null){
-			Material inHand = event.getPlayer().getItemInHand().getType();
-			if(!tools.contains(inHand)){
+			ItemStack inHand = event.getPlayer().getItemInHand();//null if the hand is empty
+			if(!tools.contains(inHand.getType())){
 				event.setCancelled(true);
 				if(noDrop){
 					event.getBlock().setTypeId(0);

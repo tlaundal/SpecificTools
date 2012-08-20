@@ -21,13 +21,13 @@ public class Replacements {
 		if(keys != null){
 			for(String s : keys){
 				Material m = Material.getMaterial(s);
-				if(s != null){
+				if(m != null){
 					@SuppressWarnings("unchecked")
 					List<String> list = (List<String>) section.getList(s);
 					Set<Material> tools = new HashSet<Material>();
 					for(String tool : list){
 						if(tool.equals("HAND")){
-							tools.add(null);
+							tools.add(Material.AIR);
 						}else if(Material.valueOf(tool) != null){
 							tools.add(Material.valueOf(tool));
 						}else{
