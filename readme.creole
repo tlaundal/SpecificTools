@@ -1,0 +1,55 @@
+== SpecificTools==
+SpecificTools is an easy to use and customize plugin that allows you to decide what tools are needed to break different blocks. When configured, wood sword could be the only tool that can break diamond blocks. Or diamond hoe the only one to destroy leaves.
+
+=== Features ===
+* Works with any place able block
+* All tools are working
+* Hand can be used as a tool
+* Easy to customize
+* Aprox. 37600 possible customizations!!
+
+=== How the config works ===
+The format for the configuration is like this:
+<<code YAML>>
+Replacements:
+    [block]:
+       - [tool]
+       - [tool]
+<</code>>
+The list of blocks and tools is [[http://dev.bukkit.org/server-mods/specifictools/pages/list-of-valid-tools-and-blocks/|here]].
+
+Here is an example configuration:
+<<code YAML>>
+Replacements:
+    DIRT:
+       - HAND
+       - IRON_SWORD
+    GOLD_BLOCK:
+       - GOLD_HOE
+<</code>>
+With this config an empty hand or an iron sword are the only tools that can break dirt, and golden hoe is the only tool to break gold blocks
+
+Additionally there is one more thing you may want to change:
+<<code YAML>>
+NoDrop: true
+<</code>>
+If it is set to true the blocks that are being tried to destroy using wrong tools would get destroyed, but not drop anything.
+Else if it is set to false; the blocks just won't break.
+=== Permissions ===
+|specifictools.default|Lets the player override the tools in the config|
+|specifictools.*|All the nodes|
+
+=== How to install ===
+# Download specifictools.jar (Top right of this page)
+# Stop your server
+# Put specifictools.jar in the plugins folder of your server
+# Start and stop your server
+# Edit plugins/SpecificTools/config.yml after your needs
+# Enjoy!
+
+=== To do ===
+* Remove bugs
+* Add per world support
+* Add commands to add replacements
+* --Add all items as valid tools--
+* Add faster breaking!
