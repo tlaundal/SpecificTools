@@ -1,0 +1,4 @@
+NoDrop: true
+Replacements:
+    DIRT:
+       - HAND

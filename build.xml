@@ -1,0 +1,31 @@
+<project name="SpecificTools" default="run" basedir=".">
+    <target name="init">
+        <property name="launcher" value="run.bat"/>
+        <property name="outputDir" value="target"/>
+        <property name="jarname" value="SpecificTools"/>
+        <property name="dist" value="bukkit/server"/>
+    </target>
+    <target name="clean" depends="init">
+        <delete dir="${outputDir}" />
+    </target>
+    <target name="prepare" depends="clean">
+        <mkdir dir="${outputDir}" />
+    </target>
+    <target name="maven" depends="prepare">
+        <exec executable="cmd">
+            <arg value="/c"/>
+            <arg value="mvn"/>
+            <arg value="install"/>
+        </exec>
+    </target>
+    <target name="move" depends="maven">
+        <move file="${outputDir}/${jarname}.jar" tofile="${dist}/plugins/${jarname}.jar"/>
+    </target>
+    <target name="run" depends="move">
+        <exec executable="cmd" dir="${dist}" spawn="true">
+            <arg value="/c"/>
+            <arg value="start"/>
+            <arg value="${launcher}"/>
+        </exec>
+    </target>
+</project>
