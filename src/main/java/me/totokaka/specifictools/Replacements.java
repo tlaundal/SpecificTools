@@ -15,9 +15,24 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class Replacements {
 	
 	Map<String, Map<Material, Set<Material>>> replacements = new HashMap<String, Map<Material, Set<Material>>>();
-	
-	public void load(SpecificTools plugin){
+	SpecificTools plugin;
+	public boolean load(SpecificTools plugin){
+		this.plugin = plugin;
 		FileConfiguration config = plugin.getConfig();
+		try{
+			parseConfig(config);
+		}catch(Exception ex){
+			plugin.getLogger().warning("Something went terrebly wrong while parsing config.yml!\n" +
+					"The error was:");
+			ex.printStackTrace();
+			plugin.getLogger().warning("Disabling plugin.");
+			plugin.getPluginLoader().disablePlugin(plugin);
+			return false;
+		}
+		return true;
+	}
+	
+	public void parseConfig(FileConfiguration config){
 		ConfigurationSection section = config.getConfigurationSection("Replacements");
 		Set<String> wKeys = section.getKeys(false);// the worlds
 		if(wKeys != null){
@@ -40,7 +55,7 @@ public class Replacements {
 											 +tool+" is not a valid tool!");
 								}
 							}
-							if(replacements.get(s) != null){
+							if(replacements.get(s) == null){
 								replacements.put(s, new HashMap<Material, Set<Material>>());
 							}
 							replacements.get(s).put(m, tools);
