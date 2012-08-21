@@ -8,11 +8,53 @@ dev-url: ${project.url}
 main: me.totokaka.specifictools.SpecificTools
 database: false
 
+commands:
+  SpecificTools:
+    aliases: [Tools, st]
+    description: List, create, edit or delete replacements
+    usage: |
+      /<command> [edit|create|delete|list] (Block)
+      Example: /<command> list
+      Example: /<command> create Dirt
+      Example: /<command> edit Dirt
+      Example: /<command> delete Dirt
+  SpecificToolsAdd:
+    aliases: [toolsAdd, sAdd, tAdd]
+    description: Add a tool to a replacement
+    usage: |
+      /<command> [tool]
+      Example: /<command> Diamond_sword
+  SpecificToolsRemove:
+    aliases: [toolsRemove, sRemove, tRemove]
+    description: Remove a tool from a replacement
+    usage: |
+      /<command> [tool]
+      Example: /<command> Diamond_sword
+
 permissions:
   SpecificTools.*:
     description: Gives access to all SpecificTools commands
+    default: op
     children:
-      SpecificTools.defaults: true
+      SpecificTools.defaults: false
+      SpecificTools.replacements.*: true
+      
   SpecificTools.defaults:
-    description: Does so you need to use the default tools.
+    description: Makes only the default tools valid for the player
     default: false
+    
+  SpecificTools.replacements.*:
+    description: Makes the player able to create, delete, edit and list replacements.
+    children:
+      SpecificTools.replacements.create: true
+      SpecificTools.replacements.delete: true
+      SpecificTools.replacements.edit: true
+      SpecificTools.replacements.list: true
+  SpecificTools.replacements.create:
+    description: Makes the player able to create replacements
+  SpecificTools.replacements.delete:
+    description: Makes the player able to delete replacements
+  SpecificTools.replacements.edit:
+    description: Makes the player able to edit replacements
+  SpecificTools.replacements.list:
+    description: Makes the player able to list all the replacements
