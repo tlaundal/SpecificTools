@@ -12,6 +12,7 @@ commands:
   SpecificTools:
     aliases: [Tools, st]
     description: List, create, edit or delete replacements
+    permission: SpecificTools.command.specifictools
     usage: |
       /<command> [edit|create|delete|list] (Block)
       Example: /<command> list
@@ -21,12 +22,14 @@ commands:
   SpecificToolsAdd:
     aliases: [toolsAdd, sAdd, tAdd]
     description: Add a tool to a replacement
+    permission: SpecificTools.command.specifictoolsadd
     usage: |
       /<command> [tool]
       Example: /<command> Diamond_sword
   SpecificToolsRemove:
     aliases: [toolsRemove, sRemove, tRemove]
     description: Remove a tool from a replacement
+    permission: SpecificTools.command.specifictoolsremove
     usage: |
       /<command> [tool]
       Example: /<command> Diamond_sword
@@ -52,9 +55,20 @@ permissions:
       SpecificTools.replacements.list: true
   SpecificTools.replacements.create:
     description: Makes the player able to create replacements
+    children:
+      SpecificTools.command.specifictools: true
+      SpecificTools.command.specifictoolsadd: true
   SpecificTools.replacements.delete:
     description: Makes the player able to delete replacements
+    children:
+      SpecificTools.command.specifictools: true
   SpecificTools.replacements.edit:
     description: Makes the player able to edit replacements
+    children:
+      SpecificTools.command.specifictools: true
+      SpecificTools.command.specifictoolsadd: true
+      SpecificTools.command.specifictoolsremove: true
   SpecificTools.replacements.list:
     description: Makes the player able to list all the replacements
+    children:
+      SpecificTools.command.specifictools: true
