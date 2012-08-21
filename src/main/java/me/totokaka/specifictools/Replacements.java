@@ -21,7 +21,7 @@ public class Replacements {
 		if(keys != null){
 			for(String s : keys){
 				Material m = Material.getMaterial(s);
-				if(m != null){
+				if(m != null && m.isBlock()){
 					@SuppressWarnings("unchecked")
 					List<String> list = (List<String>) section.getList(s);
 					Set<Material> tools = new HashSet<Material>();
