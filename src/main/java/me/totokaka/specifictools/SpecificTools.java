@@ -22,11 +22,13 @@ public class SpecificTools extends JavaPlugin implements Listener{
 		this.noDrop = this.getConfig().getBoolean("NoDrop");
 		this.getConfig().options().header("------------------SpecificTools Config------------------\n"
 										 +"Here is an example of the format in this config:\n" +
-										 "DIRT:\n" +
-										 "   - HAND\n" +
-										 "   - DIAMOND_SHOVEL\n" +
+										 "Replacements:\n" +
+										 "    world:\n" +
+										 "        DIRT:\n" +
+										 "           - HAND\n" +
+										 "           - DIAMOND_SHOVEL\n" +
 										 "This exaple makes the players hand and Diamond shovel as the only \"tools\" " +
-										 "capable of destroying Dirt\n\n" +
+										 "capable of destroying Dirt in world\n\n" +
 										 "If you set NoDrop to false the block will not break if the player tries to destroy it with a tool that is not valid\n" +
 										 "If you set it to true the block will not drop anything.."
 										 +"");
