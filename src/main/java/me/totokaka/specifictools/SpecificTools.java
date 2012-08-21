@@ -3,6 +3,7 @@ package me.totokaka.specifictools;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -40,15 +41,21 @@ public class SpecificTools extends JavaPlugin implements Listener{
 		// TODO faster breaking
 		Set<Material> tools = replacements.getToolsByBlock(event.getBlock().getType());
 		if(!event.getPlayer().hasPermission("SpecificTools.default") && tools != null){
-			ItemStack inHand = event.getPlayer().getItemInHand();//null if the hand is empty
+			ItemStack inHand = event.getPlayer().getItemInHand();
 			if(!tools.contains(inHand.getType())){
 				event.setCancelled(true);
 				if(noDrop){
 					event.getBlock().setTypeId(0);
 				}
+			}else{ //the player has a valid tool
+				Block block = event.getBlock();
+				event.setCancelled(true);
+				for(ItemStack item : block.getDrops()){
+					this.getLogger().info(block.getDrops().toString());
+					block.getWorld().dropItemNaturally(block.getLocation(), item);
+				}
+				event.getBlock().setTypeId(0);
 			}
-		}else{
-			// FIXME Drop the right drop!
 		}
 	}
 	
