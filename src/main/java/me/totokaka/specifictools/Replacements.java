@@ -45,6 +45,7 @@ public class Replacements {
 	}
 	
 	public Set<Material> getToolsByBlock(Material m){
+		// TODO Per world
 		if(replacements.containsKey(m)){
 			return replacements.get(m);
 		}

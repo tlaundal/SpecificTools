@@ -32,11 +32,12 @@ public class SpecificTools extends JavaPlugin implements Listener{
 										 +"");
 		this.saveConfig();
 		replacements.load(this);
-		
+		// TODO command to add replacements
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event){
+		// TODO faster breaking
 		Set<Material> tools = replacements.getToolsByBlock(event.getBlock().getType());
 		if(!event.getPlayer().hasPermission("SpecificTools.default") && tools != null){
 			ItemStack inHand = event.getPlayer().getItemInHand();//null if the hand is empty
@@ -46,6 +47,8 @@ public class SpecificTools extends JavaPlugin implements Listener{
 					event.getBlock().setTypeId(0);
 				}
 			}
+		}else{
+			// FIXME Drop the right drop!
 		}
 	}
 	
