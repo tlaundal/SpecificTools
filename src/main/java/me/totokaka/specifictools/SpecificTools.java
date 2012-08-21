@@ -38,7 +38,7 @@ public class SpecificTools extends JavaPlugin implements Listener{
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event){
 		// TODO faster breaking
-		Set<Material> tools = replacements.getToolsByBlock(event.getBlock().getType());
+		Set<Material> tools = replacements.getToolsByBlock(event.getBlock().getType(), event.getPlayer().getWorld());
 		if(!event.getPlayer().hasPermission("SpecificTools.default") && tools != null){
 			ItemStack inHand = event.getPlayer().getItemInHand();//null if the hand is empty
 			if(!tools.contains(inHand.getType())){

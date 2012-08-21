@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -44,7 +45,7 @@ public class Replacements {
 		}
 	}
 	
-	public Set<Material> getToolsByBlock(Material m){
+	public Set<Material> getToolsByBlock(Material m, World world){
 		// TODO Per world
 		if(replacements.containsKey(m)){
 			return replacements.get(m);
