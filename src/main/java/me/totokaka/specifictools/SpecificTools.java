@@ -3,6 +3,7 @@ package me.totokaka.specifictools;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -22,11 +23,13 @@ public class SpecificTools extends JavaPlugin implements Listener{
 		this.noDrop = this.getConfig().getBoolean("NoDrop");
 		this.getConfig().options().header("------------------SpecificTools Config------------------\n"
 										 +"Here is an example of the format in this config:\n" +
-										 "DIRT:\n" +
-										 "   - HAND\n" +
-										 "   - DIAMOND_SHOVEL\n" +
+										 "Replacements:\n" +
+										 "    world:\n" +
+										 "        DIRT:\n" +
+										 "           - HAND\n" +
+										 "           - DIAMOND_SHOVEL\n" +
 										 "This exaple makes the players hand and Diamond shovel as the only \"tools\" " +
-										 "capable of destroying Dirt\n\n" +
+										 "capable of destroying Dirt in world\n\n" +
 										 "If you set NoDrop to false the block will not break if the player tries to destroy it with a tool that is not valid\n" +
 										 "If you set it to true the block will not drop anything.."
 										 +"");
@@ -38,17 +41,23 @@ public class SpecificTools extends JavaPlugin implements Listener{
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(BlockBreakEvent event){
 		// TODO faster breaking
-		Set<Material> tools = replacements.getToolsByBlock(event.getBlock().getType());
+		Set<Material> tools = replacements.getToolsByBlock(event.getBlock().getType(), event.getPlayer().getWorld());
 		if(!event.getPlayer().hasPermission("SpecificTools.default") && tools != null){
-			ItemStack inHand = event.getPlayer().getItemInHand();//null if the hand is empty
+			ItemStack inHand = event.getPlayer().getItemInHand();
 			if(!tools.contains(inHand.getType())){
 				event.setCancelled(true);
 				if(noDrop){
 					event.getBlock().setTypeId(0);
 				}
+			}else{ //the player has a valid tool
+				Block block = event.getBlock();
+				event.setCancelled(true);
+				for(ItemStack item : block.getDrops()){
+					this.getLogger().info(block.getDrops().toString());
+					block.getWorld().dropItemNaturally(block.getLocation(), item);
+				}
+				event.getBlock().setTypeId(0);
 			}
-		}else{
-			// FIXME Drop the right drop!
 		}
 	}
 	
