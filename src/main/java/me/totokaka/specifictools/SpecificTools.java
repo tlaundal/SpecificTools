@@ -35,7 +35,14 @@ public class SpecificTools extends JavaPlugin implements Listener{
 										 +"");
 		this.saveConfig();
 		replacements.load(this);
-		// TODO command to add replacements
+		SpecificToolsCommands cmdExcecutor = new SpecificToolsCommands(this);
+		getCommand("SpecificTools").setExecutor(cmdExcecutor);
+		getCommand("SpecificToolsAdd").setExecutor(cmdExcecutor);
+		getCommand("SpecificToolsRemove").setExecutor(cmdExcecutor);
+	}
+	
+	public void onDisable(){
+		this.saveConfig();
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
