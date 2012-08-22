@@ -97,6 +97,9 @@ public class SpecificToolsCommands implements CommandExecutor{
 					sender.sendMessage("Your session is over.");
 				}else{
 					List<String> list = plugin.replacements.getConfig().getStringList(adds.get(sender));
+					if(args[0].equals("HAND")){
+						args[0] = "AIR";
+					}
 					if(Material.getMaterial(args[0]) != null){
 						list.add(args[0]);
 						plugin.replacements.getConfig().set(adds.get(sender), list);
@@ -125,6 +128,9 @@ public class SpecificToolsCommands implements CommandExecutor{
 					sender.sendMessage("Your session is over.");
 				}else{
 					List<String> list = plugin.replacements.getConfig().getStringList(removes.get(sender));
+					if(args[0].equals("HAND")){
+						args[0] = "AIR";
+					}
 					if(Material.getMaterial(args[0]) != null){
 						list.remove(args[0]);
 						plugin.replacements.getConfig().set(removes.get(sender), list);
