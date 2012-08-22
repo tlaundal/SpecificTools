@@ -16,9 +16,11 @@ public class Replacements {
 	
 	Map<String, Map<Material, Set<Material>>> replacements = new HashMap<String, Map<Material, Set<Material>>>();
 	SpecificTools plugin;
+	FileConfiguration config;
+	
 	public boolean load(SpecificTools plugin){
 		this.plugin = plugin;
-		FileConfiguration config = plugin.getConfig();
+		this.config = plugin.getConfig();
 		try{
 			parseConfig(config);
 		}catch(Exception ex){
@@ -80,4 +82,15 @@ public class Replacements {
 		}
 		return null;
 	}
+
+	public FileConfiguration getConfig(){
+		return config;
+	}
+	
+	public void saveAndReloadConfig(){
+		plugin.saveConfig();
+		replacements = new HashMap<String, Map<Material, Set<Material>>>();
+		this.load(plugin);
+	}
+
 }

@@ -8,17 +8,18 @@ dev-url: ${project.url}
 main: me.totokaka.specifictools.SpecificTools
 database: false
 
+
 commands:
   SpecificTools:
     aliases: [Tools, st]
     description: List, create, edit or delete replacements
     permission: SpecificTools.command.specifictools
     usage: |
-      /<command> [edit|create|delete|list] (Block)
+      /<command> [edit|create|delete|list] (World) (Block)
       Example: /<command> list
-      Example: /<command> create Dirt
-      Example: /<command> edit Dirt
-      Example: /<command> delete Dirt
+      Example: /<command> create world_nether Dirt
+      Example: /<command> edit world Dirt
+      Example: /<command> delete world_the_end Dirt
   SpecificToolsAdd:
     aliases: [toolsAdd, sAdd, tAdd]
     description: Add a tool to a replacement
@@ -33,6 +34,7 @@ commands:
     usage: |
       /<command> [tool]
       Example: /<command> Diamond_sword
+
 
 permissions:
   SpecificTools.*:
