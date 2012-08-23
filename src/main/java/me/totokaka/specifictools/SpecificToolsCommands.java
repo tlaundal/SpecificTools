@@ -56,36 +56,42 @@ public class SpecificToolsCommands implements CommandExecutor {
 				}
 			}
 			return true;
-		} else if (subCmd.equals("edit") && args.length == 3) {
-			if (Bukkit.getWorld(args[1]) != null
-					&& Material.getMaterial(args[2]) != null) {
-				if (Material.getMaterial(args[2]).isBlock()) {
-					adds.put(sender, "Replacements." + args[1] + "." + args[2]);
-					removes.put(sender, "Replacements." + args[1] + "."
-							+ args[2]);
-					sender.sendMessage("All set! To add tools type: \"/sAdd [tool]\" and type \"/sAdd finished\" when you're done");
-					sender.sendMessage("To remove tools type: \"/sRemove [tool]\" and type \"/sRemove finished\" when you're done");
-					return true;
+		} else if (args.length >= 3) {
+			final String[] newArgs = args.clone();
+			newArgs[0] = "";
+			newArgs[1] = "";
+			final String material = plugin.replacements.parseMaterial(newArgs);
+			if (subCmd.equals("edit")) {
+				if (Bukkit.getWorld(args[1]) != null
+						&& Material.getMaterial(material) != null) {
+					if (Material.getMaterial(material).isBlock()) {
+						adds.put(sender, "Replacements." + args[1] + "." + args[2]);
+						removes.put(sender, "Replacements." + args[1] + "."
+								+ args[2]);
+						sender.sendMessage("All set! To add tools type: \"/sAdd [tool]\" and type \"/sAdd finished\" when you're done");
+						sender.sendMessage("To remove tools type: \"/sRemove [tool]\" and type \"/sRemove finished\" when you're done");
+						return true;
+					}
 				}
-			}
-		} else if (subCmd.equals("create")) {
-			if (Bukkit.getWorld(args[1]) != null
-					&& Material.getMaterial(args[2]) != null) {
-				if (Material.getMaterial(args[2]).isBlock()) {
-					adds.put(sender, "Replacements." + args[1] + "." + args[2]);
-					sender.sendMessage("All set! To add tools type: \"/sAdd [tool]\" and type \"/sAdd finished\" when you're done");
-					return true;
+			} else if (subCmd.equals("create")) {
+				if (Bukkit.getWorld(args[1]) != null
+						&& Material.getMaterial(material) != null) {
+					if (Material.getMaterial(material).isBlock()) {
+						adds.put(sender, "Replacements." + args[1] + "." + args[2]);
+						sender.sendMessage("All set! To add tools type: \"/sAdd [tool]\" and type \"/sAdd finished\" when you're done");
+						return true;
+					}
 				}
-			}
-		} else if (subCmd.equals("remove")) {
-			if (Bukkit.getWorld(args[1]) != null
-					&& Material.getMaterial(args[2]) != null) {
-				if (Material.getMaterial(args[2]).isBlock()) {
-					plugin.replacements.getConfig().set(
-							"Replacements." + args[1] + "." + args[2], null);
-					plugin.replacements.saveAndReloadConfig();
-					sender.sendMessage("Entry removed");
-					return true;
+			} else if (subCmd.equals("remove")) {
+				if (Bukkit.getWorld(args[1]) != null
+						&& Material.getMaterial(material) != null) {
+					if (Material.getMaterial(material).isBlock()) {
+						plugin.replacements.getConfig().set(
+								"Replacements." + args[1] + "." + args[2], null);
+						plugin.replacements.saveAndReloadConfig();
+						sender.sendMessage("Entry removed");
+						return true;
+					}
 				}
 			}
 		}
@@ -95,7 +101,7 @@ public class SpecificToolsCommands implements CommandExecutor {
 	
 	public boolean SpecificToolsAdd(final CommandSender sender,
 			final Command cmd, final String alias, final String[] args) {
-		if (args.length == 1) {
+		if (args.length >= 1) {
 			if (adds.containsKey(sender)) {
 				if (args[0].equals("finished")) {
 					adds.remove(sender);
@@ -132,7 +138,7 @@ public class SpecificToolsCommands implements CommandExecutor {
 	
 	private boolean SpecificToolsRemove(final CommandSender sender,
 			final Command cmd, final String alias, final String[] args) {
-		if (args.length == 1) {
+		if (args.length >= 1) {
 			if (removes.containsKey(sender)) {
 				if (args[0].equals("finished")) {
 					removes.remove(sender);
