@@ -105,18 +105,19 @@ public class SpecificToolsCommands implements CommandExecutor {
 					plugin.replacements.saveAndReloadConfig();
 					sender.sendMessage("Your session is over.");
 				} else {
+					String tool = plugin.replacements.parseMaterial(args);
 					final List<String> list = plugin.replacements.getConfig()
 							.getStringList(adds.get(sender));
-					if (args[0].equals("HAND")) {
-						args[0] = "AIR";
+					if (tool.equals("HAND")) {
+						tool = "AIR";
 					}
-					if (Material.getMaterial(args[0]) != null) {
-						list.add(args[0]);
+					if (Material.getMaterial(tool) != null) {
+						list.add(tool);
 						plugin.replacements.getConfig().set(adds.get(sender),
 								list);
-						sender.sendMessage(args[0] + " is added.");
+						sender.sendMessage(tool + " is added.");
 					} else {
-						sender.sendMessage(ChatColor.RED + args[0]
+						sender.sendMessage(ChatColor.RED + tool
 								+ " Is not a valid tool!");
 					}
 				}
@@ -141,18 +142,19 @@ public class SpecificToolsCommands implements CommandExecutor {
 					plugin.replacements.saveAndReloadConfig();
 					sender.sendMessage("Your session is over.");
 				} else {
+					String tool = plugin.replacements.parseMaterial(args);
 					final List<String> list = plugin.replacements.getConfig()
 							.getStringList(removes.get(sender));
-					if (args[0].equals("HAND")) {
-						args[0] = "AIR";
+					if (tool.equals("HAND")) {
+						tool = "AIR";
 					}
-					if (Material.getMaterial(args[0]) != null) {
-						list.remove(args[0]);
+					if (Material.getMaterial(tool) != null) {
+						list.remove(tool);
 						plugin.replacements.getConfig().set(
 								removes.get(sender), list);
-						sender.sendMessage(args[0] + " is removed.");
+						sender.sendMessage(tool + " is removed.");
 					} else {
-						sender.sendMessage(ChatColor.RED + args[0]
+						sender.sendMessage(ChatColor.RED + tool
 								+ " Is not a valid tool!");
 					}
 				}
