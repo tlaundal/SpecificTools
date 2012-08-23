@@ -58,14 +58,13 @@ public class Replacements {
 						.getKeys(false);// the blocks
 				if (keys != null || Bukkit.getWorld(s) != null) {
 					for (final String material : keys) {
-						final Material m = Material.getMaterial(parseMaterial(material));
+						final Material m = Material.getMaterial(material);
 						if (m != null && m.isBlock()) {
 							@SuppressWarnings("unchecked")
 							final List<String> list = (List<String>) section
 									.getList(s + "." + material);
 							final Set<Material> tools = new HashSet<Material>();
 							for (String tool : list) {
-								tool = parseMaterial(tool);
 								if (tool.equals("HAND")) {
 									tools.add(Material.AIR);
 								} else if (Material.valueOf(tool) != null) {
