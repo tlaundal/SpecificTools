@@ -13,8 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpecificTools extends JavaPlugin implements Listener {
 	
-	Replacements replacements = new Replacements();
-	private boolean noDrop = true;
+	Replacements replacements;
+	Configuration config;
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(final BlockBreakEvent event) {
@@ -26,18 +26,35 @@ public class SpecificTools extends JavaPlugin implements Listener {
 			final ItemStack inHand = event.getPlayer().getItemInHand();
 			if (!tools.contains(inHand.getType())) {
 				event.setCancelled(true);
-				if (noDrop) {
+				if (config.notValid.equals("No drop")) {
+					event.getBlock().setTypeId(0);
+				} else if (config.notValid.equals("No break")) {
+					event.setCancelled(true);
+				} else if (config.notValid.equals("Drop")) {
+					final Block block = event.getBlock();
+					event.setCancelled(true);
+					for (final ItemStack item : block.getDrops()) {
+						getLogger().info(block.getDrops().toString());
+						block.getWorld().dropItemNaturally(block.getLocation(),
+								item);
+					}
 					event.getBlock().setTypeId(0);
 				}
 			} else { //the player has a valid tool
-				final Block block = event.getBlock();
-				event.setCancelled(true);
-				for (final ItemStack item : block.getDrops()) {
-					getLogger().info(block.getDrops().toString());
-					block.getWorld().dropItemNaturally(block.getLocation(),
-							item);
+				if (config.valid.equals("No drop")) {
+					event.getBlock().setTypeId(0);
+				} else if (config.valid.equals("No break")) {
+					event.setCancelled(true);
+				} else if (config.valid.equals("Drop")) {
+					final Block block = event.getBlock();
+					event.setCancelled(true);
+					for (final ItemStack item : block.getDrops()) {
+						getLogger().info(block.getDrops().toString());
+						block.getWorld().dropItemNaturally(block.getLocation(),
+								item);
+					}
+					event.getBlock().setTypeId(0);
 				}
-				event.getBlock().setTypeId(0);
 			}
 		}
 	}
@@ -50,30 +67,19 @@ public class SpecificTools extends JavaPlugin implements Listener {
 	@Override
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
-		saveDefaultConfig();
-		reloadConfig();
-		noDrop = getConfig().getBoolean("NoDrop");
-		getConfig()
-				.options()
-				.header("------------------SpecificTools Config------------------\n"
-						+ "Here is an example of the format in this config:\n"
-						+ "Replacements:\n"
-						+ "    world:\n"
-						+ "        DIRT:\n"
-						+ "           - HAND\n"
-						+ "           - DIAMOND_SHOVEL\n"
-						+ "This exaple makes the players hand and Diamond shovel as the only \"tools\" "
-						+ "capable of destroying Dirt in world\n\n"
-						+ "If you set NoDrop to false the block will not break if the player tries to destroy it with a tool that is not valid\n"
-						+ "If you set it to true the block will not drop anything.."
-						+ "");
-		saveConfig();
-		replacements.load(this);
-		final SpecificToolsCommands cmdExcecutor = new SpecificToolsCommands(
+		replacements = new Replacements(this);
+		config = new Configuration(this);
+		config.load();
+		replacements.load();
+		final Commands cmdExcecutor = new Commands(
 				this);
 		getCommand("SpecificTools").setExecutor(cmdExcecutor);
 		getCommand("SpecificToolsAdd").setExecutor(cmdExcecutor);
 		getCommand("SpecificToolsRemove").setExecutor(cmdExcecutor);
+	}
+	
+	public Configuration getNewConfig(){
+		return config;
 	}
 	
 }

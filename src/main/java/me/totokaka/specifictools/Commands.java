@@ -12,13 +12,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class SpecificToolsCommands implements CommandExecutor {
+public class Commands implements CommandExecutor {
 	
 	SpecificTools plugin;
 	Map<CommandSender, String> adds = new HashMap<CommandSender, String>();
 	Map<CommandSender, String> removes = new HashMap<CommandSender, String>();
 	
-	public SpecificToolsCommands(final SpecificTools plugin) {
+	public Commands(final SpecificTools plugin) {
 		this.plugin = plugin;
 	}
 	
@@ -51,7 +51,7 @@ public class SpecificToolsCommands implements CommandExecutor {
 					sender.sendMessage("    " + matKey.toString() + ": ");
 					final Set<Material> tools = materials.get(matKey);
 					for (final Material mat : tools) {
-						sender.sendMessage("        " + mat.toString());
+						sender.sendMessage("       - " + mat.toString());
 					}
 				}
 			}
@@ -60,7 +60,7 @@ public class SpecificToolsCommands implements CommandExecutor {
 			final String[] newArgs = args.clone();
 			newArgs[0] = "";
 			newArgs[1] = "";
-			final String material = plugin.replacements.parseMaterial(newArgs);
+			final String material = plugin.getNewConfig().parseMaterial(newArgs);
 			if (subCmd.equals("edit")) {
 				if (Bukkit.getWorld(args[1]) != null
 						&& Material.getMaterial(material) != null) {
@@ -86,9 +86,9 @@ public class SpecificToolsCommands implements CommandExecutor {
 				if (Bukkit.getWorld(args[1]) != null
 						&& Material.getMaterial(material) != null) {
 					if (Material.getMaterial(material).isBlock()) {
-						plugin.replacements.getConfig().set(
+						plugin.getNewConfig().getConfig().set(
 								"Replacements." + args[1] + "." + args[2], null);
-						plugin.replacements.saveAndReloadConfig();
+						plugin.getNewConfig().saveAndReloadReplacements();
 						sender.sendMessage("Entry removed");
 						return true;
 					}
@@ -108,18 +108,18 @@ public class SpecificToolsCommands implements CommandExecutor {
 					if (removes.containsKey(sender)) {
 						removes.remove(sender);
 					}
-					plugin.replacements.saveAndReloadConfig();
+					plugin.getNewConfig().saveAndReloadReplacements();
 					sender.sendMessage("Your session is over.");
 				} else {
-					String tool = plugin.replacements.parseMaterial(args);
-					final List<String> list = plugin.replacements.getConfig()
+					String tool = plugin.getNewConfig().parseMaterial(args);
+					final List<String> list = plugin.getNewConfig().getConfig()
 							.getStringList(adds.get(sender));
 					if (tool.equals("HAND")) {
 						tool = "AIR";
 					}
 					if (Material.getMaterial(tool) != null) {
 						list.add(tool);
-						plugin.replacements.getConfig().set(adds.get(sender),
+						plugin.getNewConfig().getConfig().set(adds.get(sender),
 								list);
 						sender.sendMessage(tool + " is added.");
 					} else {
@@ -145,18 +145,18 @@ public class SpecificToolsCommands implements CommandExecutor {
 					if (adds.containsKey(sender)) {
 						adds.remove(sender);
 					}
-					plugin.replacements.saveAndReloadConfig();
+					plugin.getNewConfig().saveAndReloadReplacements();
 					sender.sendMessage("Your session is over.");
 				} else {
-					String tool = plugin.replacements.parseMaterial(args);
-					final List<String> list = plugin.replacements.getConfig()
+					String tool = plugin.getNewConfig().parseMaterial(args);
+					final List<String> list = plugin.getNewConfig().getConfig()
 							.getStringList(removes.get(sender));
 					if (tool.equals("HAND")) {
 						tool = "AIR";
 					}
 					if (Material.getMaterial(tool) != null) {
 						list.remove(tool);
-						plugin.replacements.getConfig().set(
+						plugin.getNewConfig().getConfig().set(
 								removes.get(sender), list);
 						sender.sendMessage(tool + " is removed.");
 					} else {

@@ -14,12 +14,11 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class Replacements {
 	
-	Map<String, Map<Material, Set<Material>>> replacements = new HashMap<String, Map<Material, Set<Material>>>();
+	Map<String, Map<Material, Set<Material>>> replacements;
 	SpecificTools plugin;
-	FileConfiguration config;
 	
-	public FileConfiguration getConfig() {
-		return config;
+	public Replacements(final SpecificTools plugin){
+		this.plugin = plugin;
 	}
 	
 	public Set<Material> getToolsByBlock(final Material m, final World world) {
@@ -31,11 +30,10 @@ public class Replacements {
 		return null;
 	}
 	
-	public boolean load(final SpecificTools plugin) {
-		this.plugin = plugin;
-		config = plugin.getConfig();
+	public boolean load() {
+		replacements = new HashMap<String, Map<Material, Set<Material>>>();
 		try {
-			parseConfig(config);
+			parseConfig(plugin.getNewConfig().getConfig());
 		} catch (final Exception ex) {
 			plugin.getLogger().warning(
 					"Something went terrebly wrong while parsing config.yml!\n"
@@ -98,24 +96,6 @@ public class Replacements {
 			}
 		}
 	}
-	
-	public void saveAndReloadConfig() {
-		plugin.saveConfig();
-		replacements = new HashMap<String, Map<Material, Set<Material>>>();
-		load(plugin);
-	}
-	
-	public String parseMaterial(final String... old) {
-		final StringBuilder builder = new StringBuilder();
-		for (final String s : old) {
-			if (s != null) {
-				builder.append(s.toUpperCase() + " ");
-			}
-		}
-		
-		return builder.toString()
-				.trim()
-				.replace(" ", "_");
-	}
+
 	
 }

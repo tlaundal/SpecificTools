@@ -1,4 +1,5 @@
-NoDrop: true
+notValid: No drop
+valid: Drop
 Replacements:
     world:
         DIRT:
