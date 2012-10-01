@@ -24,13 +24,11 @@ public class Configuration{
 				+ "Replacements:\n"
 				+ "    world:\n"
 				+ "        DIRT:\n"
-				+ "           - HAND\n"
-				+ "           - DIAMOND_SHOVEL\n"
-				+ "This exaple makes the players hand and Diamond shovel as the only \"tools\" "
-				+ "capable of destroying Dirt in world\n\n"
-				+ "The valid and notValid options are configured in the same way, you can set them to: Drop, No drop or No break\n"
-				+ "These are pretty self explaning. the 'valid' option is used when a player breaks a block with a valid tool,\n"
-				+ "if the player does with a non valid tool notValid is used"
+				+ "           HAND: [destroy]\n"
+				+ "           DIAMOND_SHOVEL: [destroy, drop]\n"
+				+ "This exaple makes the players hand and diamond shovel as the only \"tools\" "
+				+ "capable of destroying Dirt in world\n"
+				+ "Dirt will just destory the block, but a diamond shovel will setroy and drop it.\n"
 				+ "--------------------------------------------------------");
 		plugin.saveConfig();
 		

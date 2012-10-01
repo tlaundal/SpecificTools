@@ -1,6 +1,5 @@
-notValid: No drop
-valid: Drop
-Replacements:
+replacements:
     world:
         DIRT:
-           - HAND
+            HAND: [destroy]
+            DIAMON_SHOVEL: [destroy, drop]
