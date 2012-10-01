@@ -28,7 +28,7 @@ public class Configuration{
 				+ "           DIAMOND_SHOVEL: [destroy, drop]\n"
 				+ "This exaple makes the players hand and diamond shovel as the only \"tools\" "
 				+ "capable of destroying Dirt in world\n"
-				+ "Dirt will just destory the block, but a diamond shovel will setroy and drop it.\n"
+				+ "Dirt will just destory the block, but a diamond shovel will destroy and drop it.\n"
 				+ "--------------------------------------------------------");
 		plugin.saveConfig();
 		

@@ -1,7 +1,6 @@
 package me.totokaka.specifictools;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,19 +13,24 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 public class Replacements {
 	//worlds         blocks            tools         actions
-	HashMap<String, HashMap<String, HashMap<String, List<String>>>> replacements;
+	Map<String, Map<String, Map<String, List<String>>>> replacements;
 	SpecificTools plugin;
 	
 	public Replacements(final SpecificTools plugin){
 		this.plugin = plugin;
 	}
 	
-	public List<String> getToolsByBlock(final Material m, final World world) {
+	public Map<String, List<String>> getToolsByBlock(final String m, final World world) {
+		if(replacements.containsKey(world)){
+			if(replacements.get(world).containsKey(m)){
+				return replacements.get(world).get(m);
+			}
+		}
 		return null;
 	}
 	
 	public boolean load() {
-		replacements = new HashMap<String, HashMap<String, HashMap<String, List<String>>>>();
+		replacements = new HashMap<String, Map<String, Map<String, List<String>>>>();
 		try {
 			parseConfig(plugin.getNewConfig().getConfig());
 		} catch (final Exception ex) {
@@ -69,7 +73,7 @@ public class Replacements {
 							}
 							//worlds
 							if(replacements.get(world) == null){
-								replacements.put(world, new HashMap<String, HashMap<String,List<String>>>());
+								replacements.put(world, new HashMap<String, Map<String,List<String>>>());
 							}
 							//blocks
 							if(replacements.get(world).get(material) == null){
