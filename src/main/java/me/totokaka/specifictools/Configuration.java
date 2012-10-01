@@ -6,9 +6,6 @@ public class Configuration{
 	FileConfiguration config;
 	SpecificTools plugin;
 	
-	public String notValid = "No drop";
-	public String valid = "Drop";
-	
 	public Configuration(SpecificTools plugin){
 		this.plugin = plugin;
 		this.config = plugin.getConfig();
@@ -31,9 +28,6 @@ public class Configuration{
 				+ "Dirt will just destory the block, but a diamond shovel will destroy and drop it.\n"
 				+ "--------------------------------------------------------");
 		plugin.saveConfig();
-		
-		this.notValid = config.getString("Settings.notValid");
-		this.valid = config.getString("Settings.valid");
 		
 		return true;
 	}

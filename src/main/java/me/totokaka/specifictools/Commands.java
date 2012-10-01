@@ -25,7 +25,7 @@ public class Commands implements CommandExecutor {
 	@Override
 	public boolean onCommand(final CommandSender sender, final Command cmd,
 			final String alias, final String[] args) {
-		if (args.length >= 1) {
+		/*if (args.length >= 1) {
 			if (cmd.getName().equals("SpecificTools")) {
 				return SpecificTools(sender, cmd, alias, args);
 			} else if (cmd.getName().equals("SpecificToolsAdd")) {
@@ -33,10 +33,10 @@ public class Commands implements CommandExecutor {
 			} else if (cmd.getName().equals("SpecificToolsRemove")) {
 				return SpecificToolsRemove(sender, cmd, alias, args);
 			}
-		}
-		return false;
+		}*/
+		throw new UnsupportedOperationException();
 	}
-	
+	/*
 	public boolean SpecificTools(final CommandSender sender, final Command cmd,
 			final String alias, final String[] args) {
 		final String subCmd = args[0];
@@ -171,6 +171,6 @@ public class Commands implements CommandExecutor {
 			return true;
 		}
 		return false;
-	}
+	}*/
 	
 }

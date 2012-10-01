@@ -1,9 +1,9 @@
 package me.totokaka.specifictools;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -19,41 +19,18 @@ public class SpecificTools extends JavaPlugin implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onBlockBreak(final BlockBreakEvent event) {
 		// TODO faster breaking
-		final Set<Material> tools = replacements.getToolsByBlock(event
-				.getBlock().getType(), event.getPlayer().getWorld());
-		if (!event.getPlayer().hasPermission("SpecificTools.default")
-				&& tools != null) {
-			final ItemStack inHand = event.getPlayer().getItemInHand();
-			if (!tools.contains(inHand.getType())) {
-				event.setCancelled(true);
-				if (config.notValid.equals("No drop")) {
-					event.getBlock().setTypeId(0);
-				} else if (config.notValid.equals("No break")) {
-					event.setCancelled(true);
-				} else if (config.notValid.equals("Drop")) {
-					final Block block = event.getBlock();
-					event.setCancelled(true);
-					for (final ItemStack item : block.getDrops()) {
-						getLogger().info(block.getDrops().toString());
-						block.getWorld().dropItemNaturally(block.getLocation(),
-								item);
-					}
-					event.getBlock().setTypeId(0);
-				}
-			} else { //the player has a valid tool
-				if (config.valid.equals("No drop")) {
-					event.getBlock().setTypeId(0);
-				} else if (config.valid.equals("No break")) {
-					event.setCancelled(true);
-				} else if (config.valid.equals("Drop")) {
-					final Block block = event.getBlock();
-					event.setCancelled(true);
-					for (final ItemStack item : block.getDrops()) {
-						getLogger().info(block.getDrops().toString());
-						block.getWorld().dropItemNaturally(block.getLocation(),
-								item);
-					}
-					event.getBlock().setTypeId(0);
+		final Map<String, List<String>> tools = replacements.getToolsByBlock(event
+				.getBlock().getType().name(), event.getPlayer().getWorld());
+		Material itemInHand = event.getPlayer().getItemInHand().getType();
+		List<String> actions = tools.get(itemInHand.name());
+		if(!(actions.contains("destroy") && actions.contains("drop"))){
+			event.setCancelled(true);
+			if(actions.contains("destroy")){
+				event.getBlock().setType(Material.AIR);
+			}
+			if(actions.contains("drop")){
+				for(ItemStack stack : event.getBlock().getDrops()){
+					event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 				}
 			}
 		}
