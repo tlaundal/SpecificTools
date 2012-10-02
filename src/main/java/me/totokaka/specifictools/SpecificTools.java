@@ -29,7 +29,7 @@ public class SpecificTools extends JavaPlugin implements Listener {
 			}
 			List<String> actions = tools.get(tool);
 			if(actions != null){
-				if(!(actions.contains("destroy") && actions.contains("drop"))){
+				if(!(actions.contains("destroy") && actions.contains("explode") && actions.contains("drop"))){
 					event.setCancelled(true);
 					if(actions.contains("destroy")){
 						event.getBlock().setType(Material.AIR);
@@ -38,6 +38,9 @@ public class SpecificTools extends JavaPlugin implements Listener {
 						for(ItemStack stack : event.getBlock().getDrops()){
 							event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 						}
+					}
+					if(actions.contains("explode")){
+						event.getBlock().getWorld().createExplosion(event.getBlock().getLocation(), (float)event.getPlayer().getItemInHand().getAmount());
 					}
 				}
 			}else{

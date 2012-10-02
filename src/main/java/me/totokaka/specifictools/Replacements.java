@@ -65,7 +65,7 @@ public class Replacements {
 								}
 								List<String> actions = section.getConfigurationSection(world).getConfigurationSection(material).getStringList(tool);
 								for(String action : actions){
-									if(!(action.equals("drop") || action.equals("destroy"))){
+									if(!(action.equals("drop") || action.equals("explode") || action.equals("destroy"))){
 										plugin.getLogger().warning(action+" Is not an action!! the plugin will probably fuck up!! please stop the server and fix.");
 									}
 								}
