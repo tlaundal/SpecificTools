@@ -21,9 +21,9 @@ public class Replacements {
 	}
 	
 	public Map<String, List<String>> getToolsByBlock(final String m, final World world) {
-		if(replacements.containsKey(world)){
-			if(replacements.get(world).containsKey(m)){
-				return replacements.get(world).get(m);
+		if(replacements.containsKey(world.getName())){
+			if(replacements.get(world.getName()).containsKey(m)){
+				return replacements.get(world.getName()).get(m);
 			}
 		}
 		return null;
@@ -47,7 +47,7 @@ public class Replacements {
 	
 	public void parseConfig(final FileConfiguration config) {
 		final ConfigurationSection section = config
-				.getConfigurationSection("Replacements");
+				.getConfigurationSection("replacements");
 		final Set<String> worlds = section.getKeys(false);// the worlds
 		if (worlds != null) {
 			for (final String world : worlds) {
@@ -56,14 +56,14 @@ public class Replacements {
 					for(final String material : blocks){
 						final Material m = Material.getMaterial(material);
 						if (m != null && m.isBlock()) {
-							Set<String> tools = config.getConfigurationSection(world).getConfigurationSection(material).getKeys(false);
+							Set<String> tools = section.getConfigurationSection(world).getConfigurationSection(material).getKeys(false);
 							HashMap<String, List<String>> toolmap = new HashMap<String, List<String>>();
 							for(String tool : tools){
 								//replacements.get(world).get(material).put(tool, config.getConfigurationSection(world).getConfigurationSection(material).getStringList(tool));
 								if(!(tool.equals("HAND") || Material.getMaterial(tool) != null)){
 									plugin.getLogger().warning(tool+" Is not a tool!! the plugin will probably fuck up!! please stop the server and fix.");
 								}
-								List<String> actions = config.getConfigurationSection(world).getConfigurationSection(material).getStringList(tool);
+								List<String> actions = section.getConfigurationSection(world).getConfigurationSection(material).getStringList(tool);
 								for(String action : actions){
 									if(!(action.equals("drop") || action.equals("destroy"))){
 										plugin.getLogger().warning(action+" Is not an action!! the plugin will probably fuck up!! please stop the server and fix.");

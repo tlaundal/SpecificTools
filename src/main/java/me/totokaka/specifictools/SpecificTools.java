@@ -20,20 +20,34 @@ public class SpecificTools extends JavaPlugin implements Listener {
 	public void onBlockBreak(final BlockBreakEvent event) {
 		// TODO faster breaking
 		final Map<String, List<String>> tools = replacements.getToolsByBlock(event
-				.getBlock().getType().name(), event.getPlayer().getWorld());
-		Material itemInHand = event.getPlayer().getItemInHand().getType();
-		List<String> actions = tools.get(itemInHand.name());
-		if(!(actions.contains("destroy") && actions.contains("drop"))){
-			event.setCancelled(true);
-			if(actions.contains("destroy")){
-				event.getBlock().setType(Material.AIR);
+				.getBlock().getType().toString(), event.getPlayer().getWorld());
+		if(tools != null){
+			Material itemInHand = event.getPlayer().getItemInHand().getType();
+			String tool = itemInHand.toString();
+			if(tool.equals("AIR")){
+				tool = "HAND";
 			}
-			if(actions.contains("drop")){
-				for(ItemStack stack : event.getBlock().getDrops()){
-					event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
+			List<String> actions = tools.get(tool);
+			if(actions != null){
+				if(!(actions.contains("destroy") && actions.contains("drop"))){
+					event.setCancelled(true);
+					if(actions.contains("destroy")){
+						event.getBlock().setType(Material.AIR);
+					}
+					if(actions.contains("drop")){
+						for(ItemStack stack : event.getBlock().getDrops()){
+							event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
+						}
+					}
 				}
+			}else{
+				this.getLogger().info(itemInHand.toString() + " vs "+ itemInHand.name());
 			}
-		}
+		}/*else{
+			this.getLogger().info(event
+					.getBlock().getType().toString() + " vs " + event
+					.getBlock().getType().name());
+		}*/
 	}
 	
 	@Override
