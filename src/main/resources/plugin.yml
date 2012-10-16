@@ -13,27 +13,15 @@ commands:
   SpecificTools:
     aliases: [Tools, st]
     description: List, create, edit or delete replacements
-    permission: SpecificTools.command.specifictools
+    permission: SpecificTools.command
     usage: |
-      /<command> [edit|create|delete|list] (World) (Block)
+      /<command> [add|remove|list] (World) (Block) (tool) (action1) (action2) (...)
       Example: /<command> list
-      Example: /<command> create world_nether Dirt
-      Example: /<command> edit world Dirt
-      Example: /<command> delete world_the_end Dirt
-  SpecificToolsAdd:
-    aliases: [toolsAdd, sAdd, tAdd]
-    description: Add a tool to a replacement
-    permission: SpecificTools.command.specifictoolsadd
-    usage: |
-      /<command> [tool]
-      Example: /<command> Diamond_sword
-  SpecificToolsRemove:
-    aliases: [toolsRemove, sRemove, tRemove]
-    description: Remove a tool from a replacement
-    permission: SpecificTools.command.specifictoolsremove
-    usage: |
-      /<command> [tool]
-      Example: /<command> Diamond_sword
+      Example: /<command> add world_the_end END_STONE HAND
+      Example: /<command> add * END_STONE WOOD_SPADE destroy
+      Example: /<command> add world_the_end END_STONE IRON_SPADE destroy drop
+      Example: /<command> remove world_the_end END_STONE *
+      Example: /<command> remove * END_STONE HAND
 
 
 permissions:
@@ -42,35 +30,12 @@ permissions:
     default: op
     children:
       SpecificTools.defaults: false
-      SpecificTools.replacements.*: true
+      SpecificTools.command: true
       
   SpecificTools.defaults:
-    description: Makes only the default tools valid for the player
+    description: Bypass this plugin
     default: false
     
-  SpecificTools.replacements.*:
-    description: Makes the player able to create, delete, edit and list replacements.
-    children:
-      SpecificTools.replacements.create: true
-      SpecificTools.replacements.delete: true
-      SpecificTools.replacements.edit: true
-      SpecificTools.replacements.list: true
-  SpecificTools.replacements.create:
-    description: Makes the player able to create replacements
-    children:
-      SpecificTools.command.specifictools: true
-      SpecificTools.command.specifictoolsadd: true
-  SpecificTools.replacements.delete:
-    description: Makes the player able to delete replacements
-    children:
-      SpecificTools.command.specifictools: true
-  SpecificTools.replacements.edit:
-    description: Makes the player able to edit replacements
-    children:
-      SpecificTools.command.specifictools: true
-      SpecificTools.command.specifictoolsadd: true
-      SpecificTools.command.specifictoolsremove: true
-  SpecificTools.replacements.list:
-    description: Makes the player able to list all the replacements
-    children:
-      SpecificTools.command.specifictools: true
+  SpecificTools.command:
+    description: Gives permission to list create or delete tools
+    default: op

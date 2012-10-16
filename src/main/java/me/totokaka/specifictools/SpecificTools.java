@@ -29,28 +29,23 @@ public class SpecificTools extends JavaPlugin implements Listener {
 			}
 			List<String> actions = tools.get(tool);
 			if(actions != null){
-				if(!(actions.contains("destroy") && actions.contains("explode") && actions.contains("drop"))){
-					event.setCancelled(true);
-					if(actions.contains("destroy")){
-						event.getBlock().setType(Material.AIR);
-					}
-					if(actions.contains("drop")){
-						for(ItemStack stack : event.getBlock().getDrops()){
-							event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
-						}
-					}
-					if(actions.contains("explode")){
-						event.getBlock().getWorld().createExplosion(event.getBlock().getLocation(), (float)event.getPlayer().getItemInHand().getAmount());
+				event.setCancelled(true);
+				if(actions.contains("destroy")){
+					event.getBlock().setType(Material.AIR);
+				}
+				if(actions.contains("drop")){
+					for(ItemStack stack : event.getBlock().getDrops()){
+						event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
 					}
 				}
-			}else{
-				this.getLogger().info(itemInHand.toString() + " vs "+ itemInHand.name());
+				if(actions.contains("explode")){
+					event.getBlock().getWorld().createExplosion(event.getBlock().getLocation(), (float)event.getPlayer().getItemInHand().getAmount());
+				}
+				if(actions.contains("lightning")){
+					event.getBlock().getWorld().strikeLightning(event.getBlock().getLocation());
+				}
 			}
-		}/*else{
-			this.getLogger().info(event
-					.getBlock().getType().toString() + " vs " + event
-					.getBlock().getType().name());
-		}*/
+		}
 	}
 	
 	@Override
@@ -68,8 +63,6 @@ public class SpecificTools extends JavaPlugin implements Listener {
 		final Commands cmdExcecutor = new Commands(
 				this);
 		getCommand("SpecificTools").setExecutor(cmdExcecutor);
-		getCommand("SpecificToolsAdd").setExecutor(cmdExcecutor);
-		getCommand("SpecificToolsRemove").setExecutor(cmdExcecutor);
 	}
 	
 	public Configuration getNewConfig(){

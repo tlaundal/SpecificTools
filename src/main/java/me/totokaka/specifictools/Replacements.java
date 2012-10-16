@@ -12,7 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Replacements {
-	//worlds         blocks            tools         actions
+	//worlds    blocks      tools       actions
 	Map<String, Map<String, Map<String, List<String>>>> replacements;
 	SpecificTools plugin;
 	
@@ -65,7 +65,7 @@ public class Replacements {
 								}
 								List<String> actions = section.getConfigurationSection(world).getConfigurationSection(material).getStringList(tool);
 								for(String action : actions){
-									if(!(action.equals("drop") || action.equals("explode") || action.equals("destroy"))){
+									if(!(action.equals("drop") || action.equals("lightning")|| action.equals("explode") || action.equals("destroy"))){
 										plugin.getLogger().warning(action+" Is not an action!! the plugin will probably fuck up!! please stop the server and fix.");
 									}
 								}
