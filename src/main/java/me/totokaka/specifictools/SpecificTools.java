@@ -16,7 +16,7 @@ public class SpecificTools extends JavaPlugin implements Listener {
 	Replacements replacements;
 	Configuration config;
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(final BlockBreakEvent event) {
 		// TODO faster breaking
 		final Set<Material> tools = replacements.getToolsByBlock(event
