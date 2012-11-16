@@ -4,7 +4,7 @@
 
   <groupId>me.totokaka.specifictools</groupId>
   <artifactId>SpecificTools</artifactId>
-  <version>0.1.9</version>
+  <version>0.1.9.9</version>
   <packaging>jar</packaging>
 
   <name>SpecificTools</name>
