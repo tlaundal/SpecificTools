@@ -8,11 +8,34 @@ dev-url: ${project.url}
 main: me.totokaka.specifictools.SpecificTools
 database: false
 
+
+commands:
+  SpecificTools:
+    aliases: [Tools, st]
+    description: List, create, edit or delete replacements
+    permission: SpecificTools.command
+    usage: |
+      /<command> [add|remove|list] (World) (Block) (tool) (action1) (action2) (...)
+      Example: /<command> list
+      Example: /<command> add world_the_end END_STONE HAND
+      Example: /<command> add * END_STONE WOOD_SPADE destroy
+      Example: /<command> add world_the_end END_STONE IRON_SPADE destroy drop
+      Example: /<command> remove world_the_end END_STONE *
+      Example: /<command> remove * END_STONE HAND
+
+
 permissions:
   SpecificTools.*:
     description: Gives access to all SpecificTools commands
+    default: op
     children:
-      SpecificTools.defaults: true
+      SpecificTools.defaults: false
+      SpecificTools.command: true
+      
   SpecificTools.defaults:
-    description: Does so you need to use the default tools.
+    description: Bypass this plugin
     default: false
+    
+  SpecificTools.command:
+    description: Gives permission to list create or delete tools
+    default: op

@@ -1,4 +1,5 @@
-NoDrop: true
-Replacements:
-    DIRT:
-       - HAND
+replacements:
+    world:
+        DIRT:
+            HAND: [destroy]
+            DIAMON_SHOVEL: [destroy, drop]

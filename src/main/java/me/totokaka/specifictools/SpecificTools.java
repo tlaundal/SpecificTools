@@ -1,6 +1,7 @@
 package me.totokaka.specifictools;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -10,46 +11,62 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class SpecificTools extends JavaPlugin implements Listener{
+public class SpecificTools extends JavaPlugin implements Listener {
 	
-	Replacements replacements = new Replacements();
-	private boolean noDrop = true;
+	Replacements replacements;
+	Configuration config;
 	
-	public void onEnable(){
-		this.getServer().getPluginManager().registerEvents(this, this);
-		this.saveDefaultConfig();
-		this.reloadConfig();
-		this.noDrop = this.getConfig().getBoolean("NoDrop");
-		this.getConfig().options().header("------------------SpecificTools Config------------------\n"
-										 +"Here is an example of the format in this config:\n" +
-										 "DIRT:\n" +
-										 "   - HAND\n" +
-										 "   - DIAMOND_SHOVEL\n" +
-										 "This exaple makes the players hand and Diamond shovel as the only \"tools\" " +
-										 "capable of destroying Dirt\n\n" +
-										 "If you set NoDrop to false the block will not break if the player tries to destroy it with a tool that is not valid\n" +
-										 "If you set it to true the block will not drop anything.."
-										 +"");
-		this.saveConfig();
-		replacements.load(this);
-		// TODO command to add replacements
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onBlockBreak(BlockBreakEvent event){
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onBlockBreak(final BlockBreakEvent event) {
 		// TODO faster breaking
-		Set<Material> tools = replacements.getToolsByBlock(event.getBlock().getType());
-		if(!event.getPlayer().hasPermission("SpecificTools.default") && tools != null){
-			ItemStack inHand = event.getPlayer().getItemInHand();//null if the hand is empty
-			if(!tools.contains(inHand.getType())){
+		final Map<String, List<String>> tools = replacements.getToolsByBlock(event
+				.getBlock().getType().toString(), event.getPlayer().getWorld());
+		if(tools != null){
+			Material itemInHand = event.getPlayer().getItemInHand().getType();
+			String tool = itemInHand.toString();
+			if(tool.equals("AIR")){
+				tool = "HAND";
+			}
+			List<String> actions = tools.get(tool);
+			if(actions != null){
 				event.setCancelled(true);
-				if(noDrop){
-					event.getBlock().setTypeId(0);
+				if(actions.contains("destroy")){
+					event.getBlock().setType(Material.AIR);
+				}
+				if(actions.contains("drop")){
+					for(ItemStack stack : event.getBlock().getDrops()){
+						event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
+					}
+				}
+				if(actions.contains("explode")){
+					event.getBlock().getWorld().createExplosion(event.getBlock().getLocation(), (float)event.getPlayer().getItemInHand().getAmount());
+				}
+				if(actions.contains("lightning")){
+					event.getBlock().getWorld().strikeLightning(event.getBlock().getLocation());
 				}
 			}
-		}else{
-			// FIXME Drop the right drop!
 		}
+	}
+	
+	@Override
+	public void onDisable() {
+		saveConfig();
+	}
+	
+	@Override
+	public void onEnable() {
+		getServer().getPluginManager().registerEvents(this, this);
+		replacements = new Replacements(this);
+		config = new Configuration(this);
+		config.load();
+		replacements.load();
+		final Commands cmdExcecutor = new Commands(
+				this);
+		getCommand("SpecificTools").setExecutor(cmdExcecutor);
+	}
+	
+	public Configuration getNewConfig(){
+		return config;
 	}
 	
 }
