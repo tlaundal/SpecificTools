@@ -6,10 +6,10 @@
         <property name="dist" value="bukkit/server"/>
     </target>
     <target name="clean" depends="init">
-        <delete dir="${outputDir}" />
+        <delete dir="${outputDir}"/>
     </target>
     <target name="prepare" depends="clean">
-        <mkdir dir="${outputDir}" />
+        <mkdir dir="${outputDir}"/>
     </target>
     <target name="maven" depends="prepare">
         <exec executable="cmd">

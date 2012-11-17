@@ -1,5 +1,9 @@
 replacements:
     world:
         DIRT:
-            HAND: [destroy]
-            DIAMON_SHOVEL: [destroy, drop]
+            HAND:
+                time: 1
+                actions: [destroy]
+            DIAMOND_SHOVEL:
+                time: 20
+                actions: [destroy, drop]
