@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Listeners implements Listener
 {
@@ -29,7 +30,7 @@ public class Listeners implements Listener
     {
         if (event.getAction() == Action.LEFT_CLICK_BLOCK)
         {
-            Map<String, Replacements.ToolMeta> tools = plugin.replacements.getToolsByBlock(event.getClickedBlock().getType().toString(),
+            Map<Material, Replacements.ToolMeta> tools = plugin.replacements.getToolsByBlock(event.getClickedBlock().getType(),
                     event.getClickedBlock().getWorld());
             if (tools == null) return;
             if (tools.isEmpty()) return;
@@ -47,37 +48,32 @@ public class Listeners implements Listener
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onBlockBreak(final BlockBreakEvent event)
     {
-        final Map<String, Replacements.ToolMeta> tools = plugin.replacements.getToolsByBlock(event
-                .getBlock().getType().toString(), event.getPlayer().getWorld());
+        final Map<Material, Replacements.ToolMeta> tools = plugin.replacements.getToolsByBlock(event
+                .getBlock().getType(), event.getPlayer().getWorld());
         if (tools != null)
         {
-            Material itemInHand = event.getPlayer().getItemInHand().getType();
-            String tool = itemInHand.toString();
-            if (tool.equals("AIR"))
-            {
-                tool = "HAND";
-            }
+            Material usedTool = event.getPlayer().getItemInHand().getType();
 
-            List<String> actions = tools.get(tool).actions;
+            Set<Replacements.Action> actions = tools.get(usedTool).actions;
             if (actions != null)
             {
                 event.setCancelled(true);
-                if (actions.contains("destroy"))
+                if (actions.contains(Replacements.Action.DESTROY))
                 {
                     event.getBlock().setType(Material.AIR);
                 }
-                if (actions.contains("drop"))
+                if (actions.contains(Replacements.Action.DROP))
                 {
                     for (ItemStack stack : event.getBlock().getDrops())
                     {
                         event.getBlock().getWorld().dropItemNaturally(event.getBlock().getLocation(), stack);
                     }
                 }
-                if (actions.contains("explode"))
+                if (actions.contains(Replacements.Action.EXPLODE))
                 {
                     event.getBlock().getWorld().createExplosion(event.getBlock().getLocation(), (float) event.getPlayer().getItemInHand().getAmount());
                 }
-                if (actions.contains("lightning"))
+                if (actions.contains(Replacements.Action.LIGHTNING))
                 {
                     event.getBlock().getWorld().strikeLightning(event.getBlock().getLocation());
                 }

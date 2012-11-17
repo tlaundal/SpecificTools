@@ -6,15 +6,16 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import javax.swing.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class Replacements
 {
-    //worlds      blocks       tools       actions
-    Map<String, Map<String, Map<String, ToolMeta>>> replacements;
+    Map<World, WorldMeta> replacements;
     SpecificTools plugin;
 
     public Replacements(final SpecificTools plugin)
@@ -22,13 +23,13 @@ public class Replacements
         this.plugin = plugin;
     }
 
-    public Map<String, ToolMeta> getToolsByBlock(final String m, final World world)
+    public Map<Material, ToolMeta> getToolsByBlock(final Material block, final World world)
     {
-        if (replacements.containsKey(world.getName()))
+        if (replacements.containsKey(world))
         {
-            if (replacements.get(world.getName()).containsKey(m))
+            if (replacements.get(world.getName()).blocks.containsKey(block))
             {
-                return replacements.get(world.getName()).get(m);
+                return replacements.get(world).blocks.get(block).tools;
             }
         }
         return null;
@@ -36,7 +37,7 @@ public class Replacements
 
     public boolean load()
     {
-        replacements = new HashMap<String, Map<String, Map<String, ToolMeta>>>();
+        replacements = new HashMap<World, WorldMeta>();
         try
         {
             parseConfig(plugin.getNewConfig().getConfig());
@@ -56,76 +57,64 @@ public class Replacements
 
     public void parseConfig(final FileConfiguration config)
     {
-        final ConfigurationSection section = config
-                .getConfigurationSection("replacements");
-        final Set<String> worlds = section.getKeys(false);// the worlds
-        if (worlds != null)
+        ConfigurationSection worldSection = config.getConfigurationSection("replacements");
+        if(worldSection == null) return;
+
+        Set<String> worlds = worldSection.getKeys(false);
+        if (worlds == null) return;
+        if (worlds.isEmpty()) return;
+
+        for (String w : worlds)
         {
-            for (final String world : worlds)
+            World world = Bukkit.getWorld(w);
+            if (world == null) continue;
+
+            ConfigurationSection blockSection = worldSection.getConfigurationSection(w);
+            if(blockSection == null) continue;
+
+            Set<String> blocks = blockSection.getKeys(false);
+            if (blocks == null) continue;
+            if (blocks.isEmpty()) continue;
+
+            replacements.put(world, new WorldMeta(new HashMap<Material, BlockMeta>()));
+
+            for (String b : blocks)
             {
+                Material block = Material.getMaterial(b);
+                if (block == null) continue;
 
-                final Set<String> blocks = section.getConfigurationSection(world).getKeys(false);
-                if (blocks != null && Bukkit.getWorld(world) != null)
+                ConfigurationSection toolSection = blockSection.getConfigurationSection(b);
+                if (toolSection == null) continue;
+
+                Set<String> tools = toolSection.getKeys(false);
+                if (tools == null) continue;
+                if (tools.isEmpty()) continue;
+
+                replacements.get(world).blocks.put(block, new BlockMeta(new HashMap<Material, ToolMeta>()));
+
+                for (String t : tools)
                 {
-                    for (final String block : blocks)
+                    Material tool = Material.getMaterial(t);
+                    if (tool == null) continue;
+
+                    ConfigurationSection metaSection = toolSection.getConfigurationSection(t);
+                    if (metaSection == null) continue;
+                    if (!metaSection.contains("actions")) continue;
+                    if (!metaSection.isList("actions")) continue;
+
+                    List<String> stringActions = (List<String>) metaSection.getList("actions");
+                    Set<Action>  actions = new HashSet<Action>();
+                    for (String action : stringActions)
                     {
-                        final Material m = Material.getMaterial(block);
-                        if (m != null && m.isBlock())
-                        {
-
-                            Set<String> tools = section.getConfigurationSection(world).getConfigurationSection(block).getKeys(false);   //
-                            HashMap<String, ToolMeta> toolMap = new HashMap<String, ToolMeta>();                                //This map contains all tools and their actions for the specific block in the specific world
-                            for (String tool : tools)
-                            {
-                                if (tool.endsWith("-Time")) break;
-                                if (!(tool.equals("HAND") || Material.getMaterial(tool) != null)) //Check if the tool is a valid tool
-                                {
-                                    plugin.getLogger().warning(tool + " Is not a tool!! the plugin will probably fuck up!! please stop the server and fix.");
-                                }
-
-                                List<String> actions = section.getConfigurationSection(world).getConfigurationSection(block).getStringList(tool);
-                                for (String action : actions) // Iterate through the actions for the tool
-                                {
-                                    if (!(action.equals("drop") || action.equals("lightning") || action.equals("explode") || action.equals("destroy"))) //Check if the actions are valid
-                                    {
-                                        plugin.getLogger().warning(action + " Is not an action!! the plugin will probably fuck up!! please stop the server and fix.");
-                                    }
-                                }
-                                int time = section.getConfigurationSection(world).getConfigurationSection(block).getInt(tool + "-time", -1);
-
-                                toolMap.put(tool, new ToolMeta(actions, time));
-                            }
-
-                            //worlds
-                            if (replacements.get(world) == null)
-                            {
-                                replacements.put(world, new HashMap<String, Map<String, ToolMeta>>());
-                            }
-                            //blocks
-                            if (replacements.get(world).get(block) == null)
-                            {
-                                replacements.get(world).put(block, new HashMap<String, ToolMeta>());
-                            }
-                            replacements.get(world).get(block).putAll(toolMap);
-                        }
-                        else
-                        {
-                            plugin.getLogger().warning(
-                                    "Looks like there is something wrong with your config.yml. "
-                                            + block
-                                            + " is not a valid block!");
-                        }
+                        actions.add(Action.get(action));
                     }
-                }
-                else
-                {
-                    plugin.getLogger()
-                            .warning(
-                                    "Looks like there is something wrong with your config.yml. "
-                                            + world
-                                            + " is not a world or has no children!");
+                    int time = metaSection.getInt("time", -1);
+
+                    replacements.get(world).blocks.get(block).tools.put(tool, new ToolMeta(actions, time));
+
                 }
             }
+
         }
     }
 
@@ -151,13 +140,27 @@ public class Replacements
 
     public class ToolMeta
     {
-        public final List<String> actions;
+        public final Set<Action> actions;
         public final int time;
 
-        public ToolMeta(List<String> actions, int time)
+        public ToolMeta(Set<Action> actions, int time)
         {
             this.actions = actions;
             this.time = time;
+        }
+    }
+
+    public enum Action
+    {
+        DROP, DESTROY, EXPLODE, LIGHTNING;
+
+        public static Action get(String name)
+        {
+            if (name.equalsIgnoreCase("drop"))           return Action.DROP;
+            else if (name.equalsIgnoreCase("destroy"))   return Action.DESTROY;
+            else if (name.equalsIgnoreCase("explode"))   return Action.EXPLODE;
+            else if (name.equalsIgnoreCase("lightning")) return Action.LIGHTNING;
+            else                                         return null;
         }
     }
 
